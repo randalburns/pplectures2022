@@ -13,7 +13,7 @@ To get here, we need to do the following:
 
 For windows, I recommend using WSL (Windows Systems for Linux). I am running Ubuntu 20.04.2 LTS which comes with Python 3.8.
 
-###Install conda:
+### Install conda:
 
 Anaconda prefers that you download an installer from https://www.anaconda.com/products/individual
 If you are using WSL, you need to download and run the Ubuntu installer
