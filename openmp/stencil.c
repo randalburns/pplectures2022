@@ -21,7 +21,7 @@
  */
 
 // Dimension of the array.  Data will be DIM x DIM
-// const int DIM = 16384;
+//const int DIM = 16384;
 const int DIM = 8192;
 //const int DIM = 4096;
 // Number of trials.  Set to get desired confidence intervals.
@@ -360,7 +360,6 @@ int main()
         printf ("ompstencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
 
-
     // Bad implementation with shared variable.
     for (int x=0; x<TRIALS; x++)
     {    
@@ -370,7 +369,7 @@ int main()
         timeval_subtract ( &tresult, &begin, &end );
         printf ("bad ompstencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
-  
+
     // Unrolled loop stencil
     for (int x=0; x<TRIALS; x++)
     {    
@@ -390,6 +389,8 @@ int main()
         timeval_subtract ( &tresult, &begin, &end );
         printf ("unrolled omp avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
+  
+    return 0;
 
     // warm up sum w.r.t. cache
     array_sum(avg_ar1, avg_ar2, sum_ar);
