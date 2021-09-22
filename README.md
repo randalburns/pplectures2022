@@ -3,10 +3,11 @@ Jupyter notebooks for Parallel Programm (CS/JHU) Fall 2021
 
 The tools we are going to use for lectures:
 
-python -- interpreted programming language favored by CS-oriented data scientist and ML folks
-conda -- package manager and configuration environment for Python
-jupyter lab -- literate programming environment that mixes code and markdown
-github -- cloud-based repository management for sharing stuff
+  * python -- interpreted programming language favored by CS-oriented data scientist and ML folks
+  * conda -- package manager and configuration environment for Python
+  * jupyter lab -- literate programming environment that mixes code and markdown
+  * github -- cloud-based repository management for sharing stuff
+  
 To get here, we need to do the following:
 
 ### Install python:
