@@ -1,0 +1,57 @@
+Dump of assembler code for function count_pairs:
+ex2a.c:
+7	count_pairs(uint8_t *data, uint64_t size, uint8_t target) {
+   0x0000000000400780 <+0>:	55	push   %rbp
+   0x0000000000400781 <+1>:	48 89 e5	mov    %rsp,%rbp
+   0x0000000000400784 <+4>:	48 83 ec 30	sub    $0x30,%rsp
+   0x0000000000400788 <+8>:	48 89 7d f8	mov    %rdi,-0x8(%rbp)
+   0x000000000040078c <+12>:	48 89 75 f0	mov    %rsi,-0x10(%rbp)
+   0x0000000000400790 <+16>:	88 55 ef	mov    %dl,-0x11(%rbp)
+
+8	  uint64_t total = 0;
+   0x0000000000400793 <+19>:	48 c7 45 e0 00 00 00 00	movq   $0x0,-0x20(%rbp)
+
+9	  uint16_t check = target | (target << 8U);
+   0x000000000040079b <+27>:	0f b6 45 ef	movzbl -0x11(%rbp),%eax
+   0x000000000040079f <+31>:	0f b6 4d ef	movzbl -0x11(%rbp),%ecx
+   0x00000000004007a3 <+35>:	c1 e1 08	shl    $0x8,%ecx
+   0x00000000004007a6 <+38>:	09 c8	or     %ecx,%eax
+   0x00000000004007a8 <+40>:	66 89 45 de	mov    %ax,-0x22(%rbp)
+
+10	  for (uint64_t i = 0; i < size * 2 - 1; i++) {
+   0x00000000004007ac <+44>:	48 c7 45 d0 00 00 00 00	movq   $0x0,-0x30(%rbp)
+   0x00000000004007b4 <+52>:	48 8b 45 d0	mov    -0x30(%rbp),%rax
+   0x00000000004007b8 <+56>:	48 8b 4d f0	mov    -0x10(%rbp),%rcx
+   0x00000000004007bc <+60>:	48 c1 e1 01	shl    $0x1,%rcx
+   0x00000000004007c0 <+64>:	48 81 e9 01 00 00 00	sub    $0x1,%rcx
+   0x00000000004007c7 <+71>:	48 39 c8	cmp    %rcx,%rax
+   0x00000000004007ca <+74>:	0f 83 43 00 00 00	jae    0x400813 <count_pairs+147>
+
+11	    total += (load16(data + i) == check);
+   0x00000000004007d0 <+80>:	48 8b 45 f8	mov    -0x8(%rbp),%rax
+   0x00000000004007d4 <+84>:	48 03 45 d0	add    -0x30(%rbp),%rax
+   0x00000000004007d8 <+88>:	48 89 c7	mov    %rax,%rdi
+   0x00000000004007db <+91>:	e8 80 ff ff ff	callq  0x400760 <load16>
+   0x00000000004007e0 <+96>:	0f b7 c8	movzwl %ax,%ecx
+   0x00000000004007e3 <+99>:	0f b7 55 de	movzwl -0x22(%rbp),%edx
+   0x00000000004007e7 <+103>:	39 d1	cmp    %edx,%ecx
+   0x00000000004007e9 <+105>:	40 0f 94 c6	sete   %sil
+   0x00000000004007ed <+109>:	40 80 e6 01	and    $0x1,%sil
+   0x00000000004007f1 <+113>:	40 0f b6 ce	movzbl %sil,%ecx
+   0x00000000004007f5 <+117>:	48 63 f9	movslq %ecx,%rdi
+   0x00000000004007f8 <+120>:	48 03 7d e0	add    -0x20(%rbp),%rdi
+   0x00000000004007fc <+124>:	48 89 7d e0	mov    %rdi,-0x20(%rbp)
+
+10	  for (uint64_t i = 0; i < size * 2 - 1; i++) {
+   0x0000000000400800 <+128>:	48 8b 45 d0	mov    -0x30(%rbp),%rax
+   0x0000000000400804 <+132>:	48 05 01 00 00 00	add    $0x1,%rax
+   0x000000000040080a <+138>:	48 89 45 d0	mov    %rax,-0x30(%rbp)
+   0x000000000040080e <+142>:	e9 a1 ff ff ff	jmpq   0x4007b4 <count_pairs+52>
+
+12	  }
+13	  return total;
+   0x0000000000400813 <+147>:	48 8b 45 e0	mov    -0x20(%rbp),%rax
+   0x0000000000400817 <+151>:	48 83 c4 30	add    $0x30,%rsp
+   0x000000000040081b <+155>:	5d	pop    %rbp
+   0x000000000040081c <+156>:	c3	retq   
+End of assembler dump.

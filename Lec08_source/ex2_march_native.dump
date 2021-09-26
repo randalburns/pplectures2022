@@ -1,0 +1,37 @@
+Dump of assembler code for function count_pairs:
+ex2a.c:
+7	count_pairs(uint8_t *data, uint64_t size, uint8_t target) {
+8	  uint64_t total = 0;
+9	  uint16_t check = target | (target << 8U);
+   0x0000000000400740 <+0>:	41 89 d1	mov    %edx,%r9d
+   0x0000000000400743 <+3>:	41 c1 e1 08	shl    $0x8,%r9d
+   0x0000000000400747 <+7>:	41 09 d1	or     %edx,%r9d
+
+10	  for (uint64_t i = 0; i < size * 2 - 1; i++) {
+   0x000000000040074a <+10>:	4c 8d 04 36	lea    (%rsi,%rsi,1),%r8
+   0x000000000040074e <+14>:	49 ff c8	dec    %r8
+   0x0000000000400751 <+17>:	31 f6	xor    %esi,%esi
+   0x0000000000400753 <+19>:	31 c0	xor    %eax,%eax
+   0x0000000000400755 <+21>:	66 2e 0f 1f 84 00 00 00 00 00	nopw   %cs:0x0(%rax,%rax,1)
+   0x000000000040075f <+31>:	90	nop
+
+./helpers.h:
+30	  memcpy(&data, loc, sizeof(data));
+   0x0000000000400760 <+32>:	0f b7 14 37	movzwl (%rdi,%rsi,1),%edx
+
+ex2a.c:
+11	    total += (load16(data + i) == check);
+   0x0000000000400764 <+36>:	31 c9	xor    %ecx,%ecx
+   0x0000000000400766 <+38>:	41 39 d1	cmp    %edx,%r9d
+   0x0000000000400769 <+41>:	0f 94 c1	sete   %cl
+   0x000000000040076c <+44>:	48 01 c8	add    %rcx,%rax
+
+10	  for (uint64_t i = 0; i < size * 2 - 1; i++) {
+   0x000000000040076f <+47>:	48 ff c6	inc    %rsi
+   0x0000000000400772 <+50>:	4c 39 c6	cmp    %r8,%rsi
+   0x0000000000400775 <+53>:	72 e9	jb     0x400760 <count_pairs+32>
+
+12	  }
+13	  return total;
+   0x0000000000400777 <+55>:	c3	retq   
+End of assembler dump.

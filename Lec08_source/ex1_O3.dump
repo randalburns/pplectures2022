@@ -1,0 +1,78 @@
+Dump of assembler code for function count_pairs:
+ex1a.c:
+7	count_pairs(uint16_t *data, uint64_t size, uint8_t target) {
+8	  uint64_t total = 0;
+9	  uint16_t check = target | (target << 8U);
+10	  for (uint64_t i = 0; i < size; i++) {
+   0x0000000000400740 <+0>:	48 85 f6	test   %rsi,%rsi
+   0x0000000000400743 <+3>:	74 21	je     0x400766 <count_pairs+38>
+   0x0000000000400745 <+5>:	41 89 d2	mov    %edx,%r10d
+   0x0000000000400748 <+8>:	41 c1 e2 08	shl    $0x8,%r10d
+   0x000000000040074c <+12>:	41 09 d2	or     %edx,%r10d
+   0x000000000040074f <+15>:	48 8d 46 ff	lea    -0x1(%rsi),%rax
+   0x0000000000400753 <+19>:	41 89 f0	mov    %esi,%r8d
+   0x0000000000400756 <+22>:	41 83 e0 03	and    $0x3,%r8d
+   0x000000000040075a <+26>:	48 83 f8 03	cmp    $0x3,%rax
+   0x000000000040075e <+30>:	73 09	jae    0x400769 <count_pairs+41>
+   0x0000000000400760 <+32>:	31 d2	xor    %edx,%edx
+   0x0000000000400762 <+34>:	31 c0	xor    %eax,%eax
+   0x0000000000400764 <+36>:	eb 56	jmp    0x4007bc <count_pairs+124>
+   0x0000000000400766 <+38>:	31 c0	xor    %eax,%eax
+
+12	  }
+13	  return total;
+   0x0000000000400768 <+40>:	c3	retq   
+
+10	  for (uint64_t i = 0; i < size; i++) {
+   0x0000000000400769 <+41>:	4c 29 c6	sub    %r8,%rsi
+   0x000000000040076c <+44>:	31 d2	xor    %edx,%edx
+   0x000000000040076e <+46>:	31 c0	xor    %eax,%eax
+
+11	    total += (data[i] == check);
+   0x0000000000400770 <+48>:	44 0f b7 0c 57	movzwl (%rdi,%rdx,2),%r9d
+   0x0000000000400775 <+53>:	31 c9	xor    %ecx,%ecx
+   0x0000000000400777 <+55>:	45 39 ca	cmp    %r9d,%r10d
+   0x000000000040077a <+58>:	0f 94 c1	sete   %cl
+   0x000000000040077d <+61>:	48 01 c1	add    %rax,%rcx
+   0x0000000000400780 <+64>:	44 0f b7 4c 57 02	movzwl 0x2(%rdi,%rdx,2),%r9d
+   0x0000000000400786 <+70>:	31 c0	xor    %eax,%eax
+   0x0000000000400788 <+72>:	45 39 ca	cmp    %r9d,%r10d
+   0x000000000040078b <+75>:	0f 94 c0	sete   %al
+   0x000000000040078e <+78>:	48 01 c8	add    %rcx,%rax
+   0x0000000000400791 <+81>:	44 0f b7 4c 57 04	movzwl 0x4(%rdi,%rdx,2),%r9d
+   0x0000000000400797 <+87>:	31 c9	xor    %ecx,%ecx
+   0x0000000000400799 <+89>:	45 39 ca	cmp    %r9d,%r10d
+   0x000000000040079c <+92>:	0f 94 c1	sete   %cl
+   0x000000000040079f <+95>:	48 01 c1	add    %rax,%rcx
+   0x00000000004007a2 <+98>:	44 0f b7 4c 57 06	movzwl 0x6(%rdi,%rdx,2),%r9d
+   0x00000000004007a8 <+104>:	31 c0	xor    %eax,%eax
+   0x00000000004007aa <+106>:	45 39 ca	cmp    %r9d,%r10d
+   0x00000000004007ad <+109>:	0f 94 c0	sete   %al
+   0x00000000004007b0 <+112>:	48 01 c8	add    %rcx,%rax
+
+10	  for (uint64_t i = 0; i < size; i++) {
+   0x00000000004007b3 <+115>:	48 83 c2 04	add    $0x4,%rdx
+   0x00000000004007b7 <+119>:	48 39 d6	cmp    %rdx,%rsi
+   0x00000000004007ba <+122>:	75 b4	jne    0x400770 <count_pairs+48>
+   0x00000000004007bc <+124>:	4d 85 c0	test   %r8,%r8
+   0x00000000004007bf <+127>:	74 28	je     0x4007e9 <count_pairs+169>
+   0x00000000004007c1 <+129>:	4c 8d 0c 57	lea    (%rdi,%rdx,2),%r9
+   0x00000000004007c5 <+133>:	31 f6	xor    %esi,%esi
+   0x00000000004007c7 <+135>:	66 0f 1f 84 00 00 00 00 00	nopw   0x0(%rax,%rax,1)
+
+11	    total += (data[i] == check);
+   0x00000000004007d0 <+144>:	41 0f b7 3c 71	movzwl (%r9,%rsi,2),%edi
+   0x00000000004007d5 <+149>:	31 d2	xor    %edx,%edx
+   0x00000000004007d7 <+151>:	41 39 fa	cmp    %edi,%r10d
+   0x00000000004007da <+154>:	0f 94 c2	sete   %dl
+   0x00000000004007dd <+157>:	48 01 d0	add    %rdx,%rax
+
+10	  for (uint64_t i = 0; i < size; i++) {
+   0x00000000004007e0 <+160>:	48 83 c6 01	add    $0x1,%rsi
+   0x00000000004007e4 <+164>:	49 39 f0	cmp    %rsi,%r8
+   0x00000000004007e7 <+167>:	75 e7	jne    0x4007d0 <count_pairs+144>
+
+12	  }
+13	  return total;
+   0x00000000004007e9 <+169>:	c3	retq   
+End of assembler dump.

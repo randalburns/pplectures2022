@@ -1,0 +1,50 @@
+Dump of assembler code for function count_pairs:
+ex1a.c:
+7	count_pairs(uint16_t *data, uint64_t size, uint8_t target) {
+   0x0000000000400780 <+0>:	55	push   %rbp
+   0x0000000000400781 <+1>:	48 89 e5	mov    %rsp,%rbp
+   0x0000000000400784 <+4>:	48 89 7d f8	mov    %rdi,-0x8(%rbp)
+   0x0000000000400788 <+8>:	48 89 75 f0	mov    %rsi,-0x10(%rbp)
+   0x000000000040078c <+12>:	88 55 ef	mov    %dl,-0x11(%rbp)
+
+8	  uint64_t total = 0;
+   0x000000000040078f <+15>:	48 c7 45 e0 00 00 00 00	movq   $0x0,-0x20(%rbp)
+
+9	  uint16_t check = target | (target << 8U);
+   0x0000000000400797 <+23>:	0f b6 45 ef	movzbl -0x11(%rbp),%eax
+   0x000000000040079b <+27>:	0f b6 4d ef	movzbl -0x11(%rbp),%ecx
+   0x000000000040079f <+31>:	c1 e1 08	shl    $0x8,%ecx
+   0x00000000004007a2 <+34>:	09 c8	or     %ecx,%eax
+   0x00000000004007a4 <+36>:	66 89 45 de	mov    %ax,-0x22(%rbp)
+
+10	  for (uint64_t i = 0; i < size; i++) {
+   0x00000000004007a8 <+40>:	48 c7 45 d0 00 00 00 00	movq   $0x0,-0x30(%rbp)
+   0x00000000004007b0 <+48>:	48 8b 45 d0	mov    -0x30(%rbp),%rax
+   0x00000000004007b4 <+52>:	48 3b 45 f0	cmp    -0x10(%rbp),%rax
+   0x00000000004007b8 <+56>:	0f 83 3c 00 00 00	jae    0x4007fa <count_pairs+122>
+
+11	    total += (data[i] == check);
+   0x00000000004007be <+62>:	48 8b 45 f8	mov    -0x8(%rbp),%rax
+   0x00000000004007c2 <+66>:	48 8b 4d d0	mov    -0x30(%rbp),%rcx
+   0x00000000004007c6 <+70>:	0f b7 14 48	movzwl (%rax,%rcx,2),%edx
+   0x00000000004007ca <+74>:	0f b7 75 de	movzwl -0x22(%rbp),%esi
+   0x00000000004007ce <+78>:	39 f2	cmp    %esi,%edx
+   0x00000000004007d0 <+80>:	40 0f 94 c7	sete   %dil
+   0x00000000004007d4 <+84>:	40 80 e7 01	and    $0x1,%dil
+   0x00000000004007d8 <+88>:	40 0f b6 d7	movzbl %dil,%edx
+   0x00000000004007dc <+92>:	48 63 c2	movslq %edx,%rax
+   0x00000000004007df <+95>:	48 03 45 e0	add    -0x20(%rbp),%rax
+   0x00000000004007e3 <+99>:	48 89 45 e0	mov    %rax,-0x20(%rbp)
+
+10	  for (uint64_t i = 0; i < size; i++) {
+   0x00000000004007e7 <+103>:	48 8b 45 d0	mov    -0x30(%rbp),%rax
+   0x00000000004007eb <+107>:	48 05 01 00 00 00	add    $0x1,%rax
+   0x00000000004007f1 <+113>:	48 89 45 d0	mov    %rax,-0x30(%rbp)
+   0x00000000004007f5 <+117>:	e9 b6 ff ff ff	jmpq   0x4007b0 <count_pairs+48>
+
+12	  }
+13	  return total;
+   0x00000000004007fa <+122>:	48 8b 45 e0	mov    -0x20(%rbp),%rax
+   0x00000000004007fe <+126>:	5d	pop    %rbp
+   0x00000000004007ff <+127>:	c3	retq   
+End of assembler dump.

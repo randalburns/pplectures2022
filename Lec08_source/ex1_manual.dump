@@ -1,0 +1,42 @@
+Dump of assembler code for function count_pairs:
+ex1c.c:
+8	count_pairs(uint16_t *data, uint64_t size, uint8_t target) {
+9	  data = __builtin_assume_aligned(data, 32);
+10	  uint64_t total = 0;
+11	  uint16_t check = target | (target << 8U);
+12	  __m256i compare = _mm256_set1_epi16(check);
+13	  for (uint64_t i = 0; i < size; i += 16) {
+   0x0000000000400740 <+0>:	48 85 f6	test   %rsi,%rsi
+   0x0000000000400743 <+3>:	74 3b	je     0x400780 <count_pairs+64>
+   0x0000000000400745 <+5>:	89 d0	mov    %edx,%eax
+   0x0000000000400747 <+7>:	c1 e0 08	shl    $0x8,%eax
+   0x000000000040074a <+10>:	09 d0	or     %edx,%eax
+   0x000000000040074c <+12>:	c5 f9 6e c0	vmovd  %eax,%xmm0
+   0x0000000000400750 <+16>:	c4 e2 7d 79 c0	vpbroadcastw %xmm0,%ymm0
+   0x0000000000400755 <+21>:	31 c9	xor    %ecx,%ecx
+   0x0000000000400757 <+23>:	31 c0	xor    %eax,%eax
+   0x0000000000400759 <+25>:	0f 1f 80 00 00 00 00	nopl   0x0(%rax)
+
+15	        _mm256_cmpeq_epi16(_mm256_load_si256((__m256i *)(data + i)), compare));
+   0x0000000000400760 <+32>:	c5 fd 75 0c 4f	vpcmpeqw (%rdi,%rcx,2),%ymm0,%ymm1
+
+14	    uint32_t block = _mm256_movemask_epi8(
+   0x0000000000400765 <+37>:	c5 fd d7 d1	vpmovmskb %ymm1,%edx
+
+16	    total += __builtin_popcount(block);
+   0x0000000000400769 <+41>:	f3 0f b8 d2	popcnt %edx,%edx
+   0x000000000040076d <+45>:	48 01 d0	add    %rdx,%rax
+
+13	  for (uint64_t i = 0; i < size; i += 16) {
+   0x0000000000400770 <+48>:	48 83 c1 10	add    $0x10,%rcx
+   0x0000000000400774 <+52>:	48 39 f1	cmp    %rsi,%rcx
+   0x0000000000400777 <+55>:	72 e7	jb     0x400760 <count_pairs+32>
+
+17	  }
+18	  return total / 2;
+   0x0000000000400779 <+57>:	48 d1 e8	shr    %rax
+   0x000000000040077c <+60>:	c5 f8 77	vzeroupper 
+   0x000000000040077f <+63>:	c3	retq   
+   0x0000000000400780 <+64>:	31 c0	xor    %eax,%eax
+   0x0000000000400782 <+66>:	c3	retq   
+End of assembler dump.

@@ -1,0 +1,57 @@
+Dump of assembler code for function count_pairs:
+ex2b.c:
+8	count_pairs(uint8_t *data, uint64_t size, uint8_t target) {
+   0x0000000000400740 <+0>:	31 c9	xor    %ecx,%ecx
+
+9	  uint64_t total = 0;
+10	  uint32_t last_bit = 0;
+11	  __m256i compare = _mm256_set1_epi8(target);
+12	  for (uint64_t i = 0; i < size * 2; i += 32) {
+   0x0000000000400742 <+2>:	48 01 f6	add    %rsi,%rsi
+   0x0000000000400745 <+5>:	74 4d	je     0x400794 <count_pairs+84>
+   0x0000000000400747 <+7>:	c5 f9 6e c2	vmovd  %edx,%xmm0
+   0x000000000040074b <+11>:	c4 e2 7d 78 c0	vpbroadcastb %xmm0,%ymm0
+   0x0000000000400750 <+16>:	45 31 c0	xor    %r8d,%r8d
+   0x0000000000400753 <+19>:	45 31 c9	xor    %r9d,%r9d
+   0x0000000000400756 <+22>:	66 2e 0f 1f 84 00 00 00 00 00	nopw   %cs:0x0(%rax,%rax,1)
+
+13	    uint32_t block = _mm256_movemask_epi8(
+   0x0000000000400760 <+32>:	c4 a1 7d 74 0c 0f	vpcmpeqb (%rdi,%r9,1),%ymm0,%ymm1
+   0x0000000000400766 <+38>:	c5 fd d7 d1	vpmovmskb %ymm1,%edx
+
+14	        _mm256_cmpeq_epi8(_mm256_load_si256((__m256i *)(data + i)), compare));
+15	    total += __builtin_popcount(block & (block >> 1U));
+   0x000000000040076a <+42>:	89 d0	mov    %edx,%eax
+   0x000000000040076c <+44>:	d1 e8	shr    %eax
+   0x000000000040076e <+46>:	21 d0	and    %edx,%eax
+   0x0000000000400770 <+48>:	f3 0f b8 c0	popcnt %eax,%eax
+
+16	    if (last_bit) {
+   0x0000000000400774 <+52>:	21 d1	and    %edx,%ecx
+
+15	    total += __builtin_popcount(block & (block >> 1U));
+   0x0000000000400776 <+54>:	4c 01 c1	add    %r8,%rcx
+
+16	    if (last_bit) {
+   0x0000000000400779 <+57>:	48 01 c1	add    %rax,%rcx
+
+17	      total += last_bit & block;
+18	    }
+19	    last_bit = block >> 31U;
+   0x000000000040077c <+60>:	c1 ea 1f	shr    $0x1f,%edx
+
+12	  for (uint64_t i = 0; i < size * 2; i += 32) {
+   0x000000000040077f <+63>:	49 83 c1 20	add    $0x20,%r9
+   0x0000000000400783 <+67>:	48 89 c8	mov    %rcx,%rax
+   0x0000000000400786 <+70>:	49 89 c8	mov    %rcx,%r8
+   0x0000000000400789 <+73>:	89 d1	mov    %edx,%ecx
+   0x000000000040078b <+75>:	49 39 f1	cmp    %rsi,%r9
+   0x000000000040078e <+78>:	72 d0	jb     0x400760 <count_pairs+32>
+
+20	  }
+21	  return total;
+   0x0000000000400790 <+80>:	c5 f8 77	vzeroupper 
+   0x0000000000400793 <+83>:	c3	retq   
+   0x0000000000400794 <+84>:	31 c0	xor    %eax,%eax
+   0x0000000000400796 <+86>:	c3	retq   
+End of assembler dump.

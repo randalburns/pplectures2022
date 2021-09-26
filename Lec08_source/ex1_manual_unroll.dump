@@ -1,0 +1,305 @@
+Dump of assembler code for function count_pairs:
+ex1d.c:
+8	count_pairs(uint16_t *data, uint64_t size, uint8_t target) {
+9	  data = __builtin_assume_aligned(data, 32);
+10	  uint64_t total = 0;
+11	  uint16_t check = target | (target << 8U);
+12	  __m256i compare = _mm256_set1_epi16(check);
+13	  for (uint64_t j = 0; j < size; j += 1024) {
+   0x0000000000400740 <+0>:	48 85 f6	test   %rsi,%rsi
+   0x0000000000400743 <+3>:	0f 84 7c 01 00 00	je     0x4008c5 <count_pairs+389>
+   0x0000000000400749 <+9>:	89 d0	mov    %edx,%eax
+   0x000000000040074b <+11>:	c1 e0 08	shl    $0x8,%eax
+   0x000000000040074e <+14>:	09 d0	or     %edx,%eax
+   0x0000000000400750 <+16>:	c5 f9 6e c0	vmovd  %eax,%xmm0
+   0x0000000000400754 <+20>:	c4 e2 7d 79 c0	vpbroadcastw %xmm0,%ymm0
+   0x0000000000400759 <+25>:	31 c0	xor    %eax,%eax
+   0x000000000040075b <+27>:	c5 f1 ef c9	vpxor  %xmm1,%xmm1,%xmm1
+   0x000000000040075f <+31>:	31 c9	xor    %ecx,%ecx
+   0x0000000000400761 <+33>:	66 2e 0f 1f 84 00 00 00 00 00	nopw   %cs:0x0(%rax,%rax,1)
+   0x000000000040076b <+43>:	0f 1f 44 00 00	nopl   0x0(%rax,%rax,1)
+
+14	    __m256i eq_vec = _mm256_setzero_si256();
+15	    for (uint64_t i = 0; i < 1024; i += 64) {
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x0000000000400770 <+48>:	c5 fd 75 14 4f	vpcmpeqw (%rdi,%rcx,2),%ymm0,%ymm2
+   0x0000000000400775 <+53>:	c5 fd 75 9c 4f 80 00 00 00	vpcmpeqw 0x80(%rdi,%rcx,2),%ymm0,%ymm3
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x000000000040077e <+62>:	c5 ed 71 f2 02	vpsllw $0x2,%ymm2,%ymm2
+   0x0000000000400783 <+67>:	c5 e5 71 f3 02	vpsllw $0x2,%ymm3,%ymm3
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x0000000000400788 <+72>:	c5 ed fd d3	vpaddw %ymm3,%ymm2,%ymm2
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x000000000040078c <+76>:	c5 fd 75 9c 4f 00 01 00 00	vpcmpeqw 0x100(%rdi,%rcx,2),%ymm0,%ymm3
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x0000000000400795 <+85>:	c5 e5 71 f3 02	vpsllw $0x2,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x000000000040079a <+90>:	c5 fd 75 a4 4f 80 01 00 00	vpcmpeqw 0x180(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x00000000004007a3 <+99>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x00000000004007a8 <+104>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x00000000004007ac <+108>:	c5 fd 75 a4 4f 00 02 00 00	vpcmpeqw 0x200(%rdi,%rcx,2),%ymm0,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x00000000004007b5 <+117>:	c5 ed fd d3	vpaddw %ymm3,%ymm2,%ymm2
+
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x00000000004007b9 <+121>:	c5 e5 71 f4 02	vpsllw $0x2,%ymm4,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x00000000004007be <+126>:	c5 fd 75 a4 4f 80 02 00 00	vpcmpeqw 0x280(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x00000000004007c7 <+135>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x00000000004007cc <+140>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x00000000004007d0 <+144>:	c5 fd 75 a4 4f 00 03 00 00	vpcmpeqw 0x300(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x00000000004007d9 <+153>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x00000000004007de <+158>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x00000000004007e2 <+162>:	c5 fd 75 a4 4f 80 03 00 00	vpcmpeqw 0x380(%rdi,%rcx,2),%ymm0,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x00000000004007eb <+171>:	c5 ed fd d3	vpaddw %ymm3,%ymm2,%ymm2
+
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x00000000004007ef <+175>:	c5 e5 71 f4 02	vpsllw $0x2,%ymm4,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x00000000004007f4 <+180>:	c5 fd 75 a4 4f 00 04 00 00	vpcmpeqw 0x400(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x00000000004007fd <+189>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x0000000000400802 <+194>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x0000000000400806 <+198>:	c5 fd 75 a4 4f 80 04 00 00	vpcmpeqw 0x480(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x000000000040080f <+207>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x0000000000400814 <+212>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x0000000000400818 <+216>:	c5 fd 75 a4 4f 00 05 00 00	vpcmpeqw 0x500(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x0000000000400821 <+225>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x0000000000400826 <+230>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+   0x000000000040082a <+234>:	c5 ed fd d3	vpaddw %ymm3,%ymm2,%ymm2
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x000000000040082e <+238>:	c5 fd 75 9c 4f 80 05 00 00	vpcmpeqw 0x580(%rdi,%rcx,2),%ymm0,%ymm3
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x0000000000400837 <+247>:	c5 e5 71 f3 02	vpsllw $0x2,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x000000000040083c <+252>:	c5 fd 75 a4 4f 00 06 00 00	vpcmpeqw 0x600(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x0000000000400845 <+261>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x000000000040084a <+266>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x000000000040084e <+270>:	c5 fd 75 a4 4f 80 06 00 00	vpcmpeqw 0x680(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x0000000000400857 <+279>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x000000000040085c <+284>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x0000000000400860 <+288>:	c5 fd 75 a4 4f 00 07 00 00	vpcmpeqw 0x700(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x0000000000400869 <+297>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x000000000040086e <+302>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+
+16	      __m256i a = _mm256_cmpeq_epi16(
+   0x0000000000400872 <+306>:	c5 fd 75 a4 4f 80 07 00 00	vpcmpeqw 0x780(%rdi,%rcx,2),%ymm0,%ymm4
+
+17	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+18	      __m256i b = _mm256_cmpeq_epi16(
+19	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+20	      __m256i c = _mm256_cmpeq_epi16(
+21	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+22	      __m256i d = _mm256_cmpeq_epi16(
+23	          _mm256_load_si256((__m256i *)(data + j + i)), compare);
+24	      __m256i e = _mm256_add_epi16(a, b);
+25	      __m256i f = _mm256_add_epi16(c, d);
+26	      __m256i g = _mm256_add_epi16(e, f);
+   0x000000000040087b <+315>:	c5 dd 71 f4 02	vpsllw $0x2,%ymm4,%ymm4
+
+27	      eq_vec = _mm256_sub_epi16(eq_vec, g);
+   0x0000000000400880 <+320>:	c5 e5 fd dc	vpaddw %ymm4,%ymm3,%ymm3
+   0x0000000000400884 <+324>:	c5 ed fd d3	vpaddw %ymm3,%ymm2,%ymm2
+   0x0000000000400888 <+328>:	c5 f5 f9 d2	vpsubw %ymm2,%ymm1,%ymm2
+
+28	    }
+29	    eq_vec = _mm256_hadd_epi16(eq_vec, eq_vec);
+   0x000000000040088c <+332>:	c4 e2 6d 01 d2	vphaddw %ymm2,%ymm2,%ymm2
+
+30	    eq_vec = _mm256_hadd_epi16(eq_vec, eq_vec);
+   0x0000000000400891 <+337>:	c4 e2 6d 01 d2	vphaddw %ymm2,%ymm2,%ymm2
+
+31	    eq_vec = _mm256_hadd_epi16(eq_vec, eq_vec);
+   0x0000000000400896 <+342>:	c4 e2 6d 01 d2	vphaddw %ymm2,%ymm2,%ymm2
+
+32	    total += _mm256_extract_epi16(eq_vec, 0);
+   0x000000000040089b <+347>:	c5 f9 c5 d2 00	vpextrw $0x0,%xmm2,%edx
+   0x00000000004008a0 <+352>:	48 01 c2	add    %rax,%rdx
+
+33	    total += _mm256_extract_epi16(eq_vec, 8);
+   0x00000000004008a3 <+355>:	c4 e3 7d 39 d2 01	vextracti128 $0x1,%ymm2,%xmm2
+   0x00000000004008a9 <+361>:	c5 f9 c5 c2 00	vpextrw $0x0,%xmm2,%eax
+   0x00000000004008ae <+366>:	48 01 d0	add    %rdx,%rax
+
+13	  for (uint64_t j = 0; j < size; j += 1024) {
+   0x00000000004008b1 <+369>:	48 81 c1 00 04 00 00	add    $0x400,%rcx
+   0x00000000004008b8 <+376>:	48 39 f1	cmp    %rsi,%rcx
+   0x00000000004008bb <+379>:	0f 82 af fe ff ff	jb     0x400770 <count_pairs+48>
+
+34	  }
+35	  return total;
+   0x00000000004008c1 <+385>:	c5 f8 77	vzeroupper 
+   0x00000000004008c4 <+388>:	c3	retq   
+   0x00000000004008c5 <+389>:	31 c0	xor    %eax,%eax
+   0x00000000004008c7 <+391>:	c3	retq   
+End of assembler dump.
