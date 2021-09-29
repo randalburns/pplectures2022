@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <sys/time.h>
+
 #include <stdlib.h>
 #include <omp.h>
 
@@ -320,6 +321,7 @@ int main()
     initializexy(rand_ar1);
     initializexy(rand_ar2);
 
+/*
     // Compare iteration order w.r.t. memory layout
     for (int x=0; x<TRIALS; x++)
     {    
@@ -389,9 +391,13 @@ int main()
         timeval_subtract ( &tresult, &begin, &end );
         printf ("unrolled omp avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
-  
-    return 0;
 
+*/
+
+    // warm up avg_ar w.r.t. cache
+    stencil_average(rand_ar1, avg_ar1);
+    stencil_average(rand_ar2, avg_ar2);
+  
     // warm up sum w.r.t. cache
     array_sum(avg_ar1, avg_ar2, sum_ar);
 

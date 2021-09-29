@@ -14,8 +14,11 @@ void main ()
 {
   int x = 1;
   {
-    int x = 0;
-    printf ("Inner scope x = %d\n", x);
+      printf ("Inner scope x = %d\n", x);
+      {
+        int x = 0;
+        printf ("Inner Inner scope x = %d\n", x);
+      }
   }
   printf ("Outer scope x = %d\n", x);
 }
