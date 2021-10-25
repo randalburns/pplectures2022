@@ -1,0 +1,19 @@
+
+Perl programs to demonstrate Hadoop! streaming.
+
+The description of this program can be found at:
+http://hssl.cs.jhu.edu/wiki/doku.php?id=randal:teach:cs420:three_s_company&s[]=fof
+which also has guidance as to how to build and execute the programs.
+
+  *** fof.mapper.pl: a map program for the friends of friends program
+
+  *** fof.reducer.pl: a reducer program for the friends of friend program
+
+Some command line examples to run these on my machine.
+  
+  > cat simple.input/* | fof.mapper.pl  | sort | fof.reducer.pl 
+
+  > /Users/randal/hadoop-0.20.2/bin/hadoop jar /Users/randal/hadoop-0.20.2/contrib/streaming/hadoop-0.20.2-streaming.jar -mapper ./fof.mapper.pl -reducer fof.reducer.pl -input ./simple.input -output ./simple.output
+
+
+

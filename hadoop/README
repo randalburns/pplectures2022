@@ -1,0 +1,25 @@
+
+For wordcount
+
+~/hadoop-3.3.1/bin/hadoop com.sun.tools.javac.Main WordCount.java
+jar cf wc.jar WordCount*.class  
+~/hadoop-3.3.1/bin/hadoop jar wc.jar WordCount /user/joe/wordcount/input /user/joe/wordcount/output
+
+For  wordcount streaming
+
+~/hadoop-3.3.1/bin/mapred streaming -input ../../data/kjv -output /tmp/output4 -mapper mapper.py -reducer reducer.py
+
+
+For FoF 
+
+~/hadoop-3.3.1/bin/hadoop com.sun.tools.javac.Main FoF.java
+jar cf fof.jar FoF*.class
+~/hadoop-3.3.1/bin/hadoop jar fof.jar FoF ../../data/simple.input /tmp/fofout1
+
+
+For fof streaming
+
+
+cat ../../data/simple.input/* | ./fof.mapper.pl  | sort | ./fof.reducer.pl
+
+~/hadoop-3.3.1/bin/mapred streaming -input ../../data/simple.input/ -output /tmp/output7 -mapper fof.mapper.pl -reducer fof.reducer.pl

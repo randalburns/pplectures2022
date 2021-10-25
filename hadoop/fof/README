@@ -1,0 +1,16 @@
+
+Java programs to demonstrate Hadoop! 
+
+The description of this program can be found at:
+http://hssl.cs.jhu.edu/wiki/doku.php?id=randal:teach:cs420:three_s_company&s[]=fof
+which also has guidance as to how to build and execute the programs.
+
+  *** FoF.java
+    Hadoop! M/R implementation 
+
+  *** simple.input/
+    Small friends list inputs
+
+  *** fof.input/
+      Big ~1000 friends lists input
+
