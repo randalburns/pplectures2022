@@ -280,6 +280,21 @@ void fused_stencil_sum_omp ( double* input_ar1, double* input_ar2, double* outpu
 }
 
 /* Compute a max element */
+void max_el ( double* input_ar )
+{
+    double max_el = 0;
+    omp_set_num_threads(4);
+    
+    #pragma omp parallel for 
+    for (int x=0; x<DIM; x++) {
+        for (int y=0; y<DIM; y++) {
+            max_el = max_el > input_ar[x*DIM+y] ? max_el : input_ar[x*DIM+y]; 
+        }        
+    }
+}
+
+
+/* Compute a max element */
 void max_el_shared ( double* input_ar )
 {
     double max_el = 0;
@@ -294,21 +309,6 @@ void max_el_shared ( double* input_ar )
 }
 
 /* Compute a max element */
-void max_el_critical ( double* input_ar )
-{
-    double max_el = 0;
-    omp_set_num_threads(4);
-    
-    #pragma omp parallel 
-    for (int x=0; x<DIM; x++) {
-        for (int y=0; y<DIM; y++) {
-            #pragma omp critical
-            max_el = max_el > input_ar[x*DIM+y] ? max_el : input_ar[x*DIM+y]; 
-        }        
-    }
-}
-
-/* Compute a max element with a critical section */
 void max_el_critical ( double* input_ar )
 {
     double max_el = 0;
@@ -351,78 +351,6 @@ int main()
     initializexy(rand_ar1);
     initializexy(rand_ar2);
 
-
-    // Compare iteration order w.r.t. memory layout
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        initializexy(rand_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("xy = %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-
-        gettimeofday(&begin, NULL);
-        initializeyx(rand_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("yx = %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // warm up avg_ar w.r.t. cache
-    stencil_average(rand_ar1, avg_ar1);
-    stencil_average(rand_ar2, avg_ar2);
-
-    // Performance of serial stencil
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        stencil_average(rand_ar1, avg_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("stencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-    
-    // OpenMP parallel stencil
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        stencil_average_omp(rand_ar1, avg_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("ompstencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Bad implementation with shared variable.
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        stencil_average_omp_bad(rand_ar1, avg_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("bad ompstencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Unrolled loop stencil
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        stencil_average_unrolled(rand_ar1, avg_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("unrolled avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Unrolled and Parallelized
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        stencil_average_unrolled_omp(rand_ar1, avg_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("unrolled omp avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-
     // warm up avg_ar w.r.t. cache
     stencil_average(rand_ar1, avg_ar1);
     stencil_average(rand_ar2, avg_ar2);
@@ -430,48 +358,14 @@ int main()
     // warm up sum w.r.t. cache
     array_sum(avg_ar1, avg_ar2, sum_ar);
 
-    // Array sum base implementation
+    // Get the maximum value out of a filtered array
     for (int x=0; x<TRIALS; x++)
     {    
         gettimeofday(&begin, NULL);
-        array_sum(avg_ar1, avg_ar2, sum_ar);
+        max_el(avg_ar1);
         gettimeofday(&end, NULL);
         timeval_subtract ( &tresult, &begin, &end );
-        printf ("sum avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Array sum parallelized with OpenMP
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        array_sum_omp(avg_ar1, avg_ar2, sum_ar);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("omp sum avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Now sum two averaged arrays
-    // Perform all tasks sequentially.
-    // Each task is parallelized independently.
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        stencil_average_omp(rand_ar1, avg_ar1);
-        stencil_average_omp(rand_ar2, avg_ar2);
-        array_sum_omp(avg_ar1, avg_ar2, sum_ar);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("separate loops= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Fused all tasks into a loop.
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        fused_stencil_sum_omp(rand_ar1, rand_ar2, sum_ar);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("fused loops= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
+        printf ("max el= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
 
     // Get the maximum value out of a filtered array
@@ -481,7 +375,17 @@ int main()
         max_el_shared(avg_ar1);
         gettimeofday(&end, NULL);
         timeval_subtract ( &tresult, &begin, &end );
-        printf ("max el loops= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
+        printf ("max el shared= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
+    }
+
+    // Get the maximum value out of a filtered array
+    for (int x=0; x<TRIALS; x++)
+    {    
+        gettimeofday(&begin, NULL);
+        max_el_critical(avg_ar1);
+        gettimeofday(&end, NULL);
+        timeval_subtract ( &tresult, &begin, &end );
+        printf ("max el critical= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
 
     // Reduce the maximum value out of a filtered array
@@ -492,15 +396,5 @@ int main()
         gettimeofday(&end, NULL);
         timeval_subtract ( &tresult, &begin, &end );
         printf ("max el reduced= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
-    }
-
-    // Get the maximum value out of a filtered array with a critical section
-    for (int x=0; x<TRIALS; x++)
-    {    
-        gettimeofday(&begin, NULL);
-        max_el_critical(avg_ar1);
-        gettimeofday(&end, NULL);
-        timeval_subtract ( &tresult, &begin, &end );
-        printf ("max el critical= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
 }
