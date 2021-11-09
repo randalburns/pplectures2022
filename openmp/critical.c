@@ -324,7 +324,7 @@ void max_el_critical ( double* input_ar )
 }
 
 /* Compute a max element */
-void max_el_seperated_critical ( double* input_ar )
+void max_el_separated_critical ( double* input_ar )
 {
     double max_el = 0;
     omp_set_num_threads(4);
@@ -412,7 +412,7 @@ int main()
     for (int x=0; x<TRIALS; x++)
     {    
         gettimeofday(&begin, NULL);
-        max_el_seperated_critical(avg_ar1);
+        max_el_separated_critical(avg_ar1);
         gettimeofday(&end, NULL);
         timeval_subtract ( &tresult, &begin, &end );
         printf ("max el critical= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
