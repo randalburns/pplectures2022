@@ -322,6 +322,26 @@ void max_el_critical ( double* input_ar )
         }        
     }
 }
+
+/* Compute a max element */
+void max_el_seperated_critical ( double* input_ar )
+{
+    double max_el = 0;
+    omp_set_num_threads(4);
+    
+    #pragma omp parallel 
+    for (int x=0; x<DIM; x++) {
+        double local_max = 0;
+        for (int y=0; y<DIM; y++) {
+            local_max = local_max > input_ar[x*DIM+y] ? max_el : input_ar[x*DIM+y]; 
+        }        
+        if (local_max > max_el)
+        {
+            #pragma omp critical
+            max_el = local_max; 
+        }
+    }
+}
     
 /* Compute a max element */
 void max_el_reduce ( double* input_ar )
@@ -383,6 +403,16 @@ int main()
     {    
         gettimeofday(&begin, NULL);
         max_el_critical(avg_ar1);
+        gettimeofday(&end, NULL);
+        timeval_subtract ( &tresult, &begin, &end );
+        printf ("max el critical= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
+    }
+
+    // Get the maximum value out of a filtered array
+    for (int x=0; x<TRIALS; x++)
+    {    
+        gettimeofday(&begin, NULL);
+        max_el_seperated_critical(avg_ar1);
         gettimeofday(&end, NULL);
         timeval_subtract ( &tresult, &begin, &end );
         printf ("max el critical= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
