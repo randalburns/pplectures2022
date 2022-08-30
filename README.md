@@ -1,5 +1,5 @@
-# pplectures2021
-Jupyter notebooks for Parallel Programm (CS/JHU) Fall 2021
+# pplectures2022
+Jupyter notebooks for Parallel Programm (CS/JHU) Fall 2022
 
 The tools we are going to use for lectures:
 
