@@ -30,8 +30,8 @@ Create and activate a conda virtual environment
 
 Clone the github repository and move into directory
 
-  * `git clone https://github.com/randalburns/pplectures2021.git`
-  * `cd pplectures2021`
+  * `git clone https://github.com/randalburns/pplectures2022.git`
+  * `cd pplectures2022`
 
 ### Run jupyter lab
 
