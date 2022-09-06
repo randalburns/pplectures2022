@@ -1,0 +1,22 @@
+
+Example programs used in the OpenMP lecture in CS420 Parallel Programming.
+
+*** block.c
+
+  Simple OpenMP program that shows parallel threads through a block.
+
+*** loop.c
+
+  Simple OpenMP program that shows loop-defined parallelism
+
+*** private/firstprivate.c
+
+  OpenMP examples that contrasts the semantics of shared and private variables
+
+*** howaboutthat.c
+
+  OpenMP example that demonstrates that iteration variables are weird for reasons of serial equivalance and don't conform to the statement about the default semantics.
+
+*** noscope.c
+
+  This should not compile.  Used to demonstrate block scoping.
