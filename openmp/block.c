@@ -14,7 +14,7 @@ int main ()
 {
   int i;
 
-  // omp_set_num_threads ( 32 );
+  omp_set_num_threads ( 32 );
 
   #pragma omp parallel 
   { 
@@ -22,7 +22,7 @@ int main ()
     printf("OMP Thread# %d\n", tid);
     if ( 0 == tid )
     {
-      printf ("Master says that there are %d threads\n", omp_get_num_threads());
+      printf ("Source says that there are %d threads\n", omp_get_num_threads());
     }
   }
 }
