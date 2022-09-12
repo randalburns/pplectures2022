@@ -8,7 +8,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-#include "omp.h"
+#include <omp.h>
 
 int main () 
 {
