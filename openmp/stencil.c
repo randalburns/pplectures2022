@@ -22,11 +22,11 @@
  */
 
 // Dimension of the array.  Data will be DIM x DIM
-//const int DIM = 16384;
-const int DIM = 8192;
+const int DIM = 16384;
+//const int DIM = 8192;
 //const int DIM = 4096;
 // Number of trials.  Set to get desired confidence intervals.
-const int TRIALS = 2;
+const int TRIALS = 4;
 // HWIDTH = 2 matches the unrolled code.  If you change, comparisons will break.
 const int HWIDTH = 2;
 
@@ -293,21 +293,6 @@ void max_el_shared ( double* input_ar )
     }
 }
 
-/* Compute a max element */
-void max_el_critical ( double* input_ar )
-{
-    double max_el = 0;
-    omp_set_num_threads(4);
-    
-    #pragma omp parallel 
-    for (int x=0; x<DIM; x++) {
-        for (int y=0; y<DIM; y++) {
-            #pragma omp critical
-            max_el = max_el > input_ar[x*DIM+y] ? max_el : input_ar[x*DIM+y]; 
-        }        
-    }
-}
-
 /* Compute a max element with a critical section */
 void max_el_critical ( double* input_ar )
 {
@@ -367,6 +352,8 @@ int main()
         timeval_subtract ( &tresult, &begin, &end );
         printf ("yx = %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
+
+    return 0;
 
     // warm up avg_ar w.r.t. cache
     stencil_average(rand_ar1, avg_ar1);
