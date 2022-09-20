@@ -22,8 +22,8 @@
  */
 
 // Dimension of the array.  Data will be DIM x DIM
-const int DIM = 16384;
-//const int DIM = 8192;
+//const int DIM = 16384;
+const int DIM = 8192;
 //const int DIM = 4096;
 // Number of trials.  Set to get desired confidence intervals.
 const int TRIALS = 4;
@@ -109,6 +109,25 @@ void stencil_average_omp ( double* input_ar, double* output_ar )
     omp_set_num_threads(4);
     #pragma omp parallel for 
     for (int x=HWIDTH; x<DIM-HWIDTH; x++) {
+        for (int y=HWIDTH; y<DIM-HWIDTH; y++) {
+            double partial = 0.0;
+            for (int xs=-1*HWIDTH; xs<=HWIDTH; xs++) {
+                for (int ys=-1*HWIDTH; ys<=HWIDTH; ys++) {
+                    partial += input_ar[DIM*(x+xs)+(y+ys)];
+                }   
+            }   
+            output_ar[DIM*x+y] = partial/((2*HWIDTH+1)*(2*HWIDTH+1));
+            partial=0.0;
+        }       
+    }
+}
+
+/* Parallelize the stencil computation with OpenMP. */
+void stencil_average_omp_inner ( double* input_ar, double* output_ar )
+{
+    omp_set_num_threads(4);
+    for (int x=HWIDTH; x<DIM-HWIDTH; x++) {
+        #pragma omp parallel for 
         for (int y=HWIDTH; y<DIM-HWIDTH; y++) {
             double partial = 0.0;
             for (int xs=-1*HWIDTH; xs<=HWIDTH; xs++) {
@@ -279,7 +298,7 @@ void fused_stencil_sum_omp ( double* input_ar1, double* input_ar2, double* outpu
     }
 }
 
-/* Compute a max element */
+/* Compute a max element. This an incorrect implementation because it is not thread safe. */
 void max_el_shared ( double* input_ar )
 {
     double max_el = 0;
@@ -308,7 +327,7 @@ void max_el_critical ( double* input_ar )
     }
 }
     
-/* Compute a max element */
+/* Compute a max element with a reduction */
 void max_el_reduce ( double* input_ar )
 {
     double max_el = 0;
@@ -353,8 +372,6 @@ int main()
         printf ("yx = %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
 
-    return 0;
-
     // warm up avg_ar w.r.t. cache
     stencil_average(rand_ar1, avg_ar1);
     stencil_average(rand_ar2, avg_ar2);
@@ -377,6 +394,16 @@ int main()
         gettimeofday(&end, NULL);
         timeval_subtract ( &tresult, &begin, &end );
         printf ("ompstencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
+    }
+
+    // parallel inner loop loses performance 
+    for (int x=0; x<TRIALS; x++)
+    {    
+        gettimeofday(&begin, NULL);
+        stencil_average_omp_inner(rand_ar1, avg_ar1);
+        gettimeofday(&end, NULL);
+        timeval_subtract ( &tresult, &begin, &end );
+        printf ("inner loop parallel ompstencil avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
 
     // Bad implementation with shared variable.
@@ -418,7 +445,7 @@ int main()
     array_sum(avg_ar1, avg_ar2, sum_ar);
 
     // Array sum base implementation
-    for (int x=0; x<TRIALS; x++)
+/*    for (int x=0; x<TRIALS; x++)
     {    
         gettimeofday(&begin, NULL);
         array_sum(avg_ar1, avg_ar2, sum_ar);
@@ -436,6 +463,7 @@ int main()
         timeval_subtract ( &tresult, &begin, &end );
         printf ("omp sum avg= %f\n", (double)tresult.tv_sec + (double)tresult.tv_usec/1000000 );
     }
+*/
 
     // Now sum two averaged arrays
     // Perform all tasks sequentially.
