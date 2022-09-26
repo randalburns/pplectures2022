@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
   uint64_t start = get_usecs();
   uint64_t pair_count = count_pairs((uint8_t *)data, n, target);
   uint64_t end = get_usecs();
-  printf("took %lu milleseconds, and found %lu aligned pairs\n",
+  printf("took %lu milleseconds, and found %lu unaligned pairs\n",
          (end - start) / 1000, pair_count);
   return 0;
 }

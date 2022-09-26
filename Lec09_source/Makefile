@@ -1,6 +1,6 @@
 SEED ?= 0
 BYTE ?= 0
-LOGN ?= 20
+LOGN ?= 29
 
 
 all: runall
