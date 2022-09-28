@@ -14,10 +14,10 @@ void main ()
 {
   int i;
   int sh = 0;
-  int pr = 0;
+  int pr = 5;
 
   #pragma omp parallel for firstprivate(pr) shared(sh)
-  for ( i=0; i<10; i++ )
+  for ( i=0; i<10000; i++ )
   { 
     printf("OMP Thread# %d, pr++=%d, sh++=%d\n", omp_get_thread_num(), pr++, sh++);
   }
