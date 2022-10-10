@@ -23,8 +23,8 @@
 
 // Dimension of the array.  Data will be DIM x DIM
 //const int DIM = 16384;
-const int DIM = 8192;
-//const int DIM = 4096;
+//const int DIM = 8192;
+const int DIM = 4096;
 // Number of trials.  Set to get desired confidence intervals.
 const int TRIALS = 4;
 // HWIDTH = 2 matches the unrolled code.  If you change, comparisons will break.
